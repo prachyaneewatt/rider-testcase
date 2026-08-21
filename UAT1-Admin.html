@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<title>UAT Admin — Rider Insure: Block Blast | งวดที่ 2</title>
+<style>
+  :root {
+    --primary: #1f3a5f;
+    --primary-light: #eaf0f6;
+    --border: #c8d6e0;
+    --bg: #f5f5f5;
+    --danger: #b3261e;
+    --success: #1a7a3a;
+    --warn: #ffa000;
+  }
+  * { box-sizing: border-box; }
+  body { font-family: 'Sarabun', 'Segoe UI', Tahoma, sans-serif; margin: 0; padding: 0; color: #1a1a1a; font-size: 13px; background: var(--bg); }
+  
+  /* Top toolbar */
+  .toolbar { position: sticky; top: 0; z-index: 100; background: var(--primary); color: #fff; padding: 10px 24px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+  .toolbar h1 { font-size: 16px; margin: 0; flex: 1; min-width: 200px; }
+  .toolbar h1 small { font-weight: 400; opacity: .7; font-size: 12px; }
+  .btn { padding: 6px 14px; border: none; border-radius: 4px; cursor: pointer; font-size: 12.5px; font-family: inherit; transition: background .15s; }
+  .btn-light { background: rgba(255,255,255,.18); color: #fff; }
+  .btn-light:hover { background: rgba(255,255,255,.3); }
+  .btn-primary { background: #fff; color: var(--primary); font-weight: 600; }
+  .btn-primary:hover { background: #e0e8f0; }
+  .btn-success { background: var(--success); color: #fff; }
+  .btn-success:hover { background: #155f2e; }
+  .btn-danger { background: var(--danger); color: #fff; }
+  .btn-danger:hover { background: #8a1d18; }
+  .btn-warn { background: var(--warn); color: #fff; }
+  .btn-warn:hover { background: #cc8000; }
+  .btn-sm { padding: 3px 9px; font-size: 11.5px; }
+  .btn-icon { padding: 3px 7px; font-size: 14px; line-height: 1; }
+  .mode-toggle { display: inline-flex; background: rgba(255,255,255,.15); border-radius: 5px; padding: 2px; }
+  .mode-toggle button { border: none; background: transparent; color: rgba(255,255,255,.7); padding: 5px 14px; border-radius: 4px; cursor: pointer; font-size: 12.5px; font-family: inherit; }
+  .mode-toggle button.active { background: #fff; color: var(--primary); font-weight: 600; }
+  .save-indicator { font-size: 11px; opacity: .8; min-width: 80px; }
+
+  /* Main container */
+  .container { max-width: 1180px; margin: 0 auto; padding: 20px; }
+
+  /* Meta card */
+  .meta-card { background: #fff; border-radius: 6px; padding: 18px 22px; margin-bottom: 18px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .meta-card h2 { font-size: 15px; color: var(--primary); margin: 0 0 12px; }
+  .meta-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+  .meta-field label { display: block; font-size: 11px; color: var(--primary); font-weight: 600; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 3px; }
+  .meta-field input { width: 100%; padding: 6px 10px; border: 1px solid var(--border); border-radius: 4px; font-size: 13px; font-family: inherit; }
+  .meta-field input:disabled { background: #f7f9fb; color: #555; }
+
+  /* Section */
+  .section { background: #fff; border-radius: 6px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); overflow: hidden; }
+  .section-header { background: var(--primary); color: #fff; padding: 10px 18px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .section-header .pill { padding: 2px 10px; border-radius: 12px; font-size: 11px; font-weight: 600; background: rgba(255,255,255,.25); }
+  .section-header .section-title { flex: 1; font-size: 15px; font-weight: 600; }
+  .section-header .section-title input { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); color: #fff; font-size: 14px; font-family: inherit; padding: 3px 8px; border-radius: 3px; width: 100%; max-width: 500px; }
+  .section-header .section-title input:focus { outline: none; border-color: #fff; }
+  .section-header .section-ref { font-size: 11px; opacity: .8; }
+  .section-header .section-ref input { background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.3); color: #fff; font-size: 11px; font-family: inherit; padding: 2px 6px; border-radius: 3px; width: 200px; }
+
+  /* Group */
+  .group { padding: 14px 18px 8px; }
+  .group-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; flex-wrap: wrap; }
+  .group-header .group-title { flex: 1; font-size: 13.5px; font-weight: 600; color: var(--primary); border-bottom: 2px solid var(--primary-light); padding-bottom: 4px; }
+  .group-header .group-title input { width: 100%; max-width: 400px; border: 1px solid var(--border); border-radius: 3px; padding: 3px 7px; font-size: 13px; font-family: inherit; }
+  .group-header .group-ref { font-size: 11px; }
+  .group-header .group-ref input { width: 180px; border: 1px solid var(--border); border-radius: 3px; padding: 2px 6px; font-size: 11px; font-family: inherit; }
+
+  /* Table */
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border: 1px solid var(--border); padding: 6px 8px; vertical-align: top; font-size: 12px; text-align: left; }
+  th { background: var(--primary-light); color: var(--primary); font-weight: 600; font-size: 11.5px; }
+  td.id { width: 50px; text-align: center; font-weight: 600; color: var(--primary); background: #f7f9fb; }
+  td.id input { width: 46px; text-align: center; border: 1px solid var(--border); border-radius: 3px; padding: 3px; font-size: 12px; font-weight: 600; color: var(--primary); font-family: inherit; }
+  td.item, td.exp, td.note { padding: 4px; }
+  td.item input, td.exp input, td.note input { width: 100%; border: 1px solid transparent; border-radius: 3px; padding: 4px 6px; font-size: 12px; font-family: inherit; background: transparent; }
+  td.item input:focus, td.exp input:focus, td.note input:focus { border-color: var(--primary); background: #fff; outline: none; }
+  td.item input { font-weight: 500; }
+  td.result { width: 90px; text-align: center; }
+  td.result select { width: 85%; padding: 3px; font-size: 12px; border: 1px solid var(--border); border-radius: 3px; font-family: inherit; }
+  td.actions { width: 36px; text-align: center; }
+  td.actions button { border: none; background: transparent; cursor: pointer; font-size: 16px; color: #ccc; padding: 2px; line-height: 1; }
+  td.actions button:hover { color: var(--danger); }
+  tr.editing td { background: #fffde7; }
+
+  .add-row { padding: 8px 18px 14px; }
+  .add-btn { display: inline-flex; align-items: center; gap: 4px; padding: 5px 12px; border: 1.5px dashed var(--border); border-radius: 4px; background: var(--primary-light); color: var(--primary); cursor: pointer; font-size: 12px; font-family: inherit; font-weight: 500; }
+  .add-btn:hover { border-color: var(--primary); background: #dce8f2; }
+
+  /* Footer */
+  .footer-bar { background: #fff; border-radius: 6px; padding: 14px 18px; margin-bottom: 16px; box-shadow: 0 1px 3px rgba(0,0,0,.08); display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+  .stat { font-size: 12.5px; color: #555; }
+  .stat strong { color: var(--primary); font-size: 15px; }
+
+  .sign-section { background: #fff; border-radius: 6px; padding: 18px 22px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,.08); }
+  .sign-section h3 { font-size: 14px; color: var(--primary); margin: 0 0 12px; }
+  .sign-grid { display: flex; gap: 28px; flex-wrap: wrap; }
+  .sign-grid > div { flex: 1; min-width: 200px; }
+  .sign-line { border-top: 1.5px solid #333; margin-top: 42px; padding-top: 6px; font-size: 12px; color: #333; }
+  .sign-line span { display: block; color: #777; font-size: 11px; }
+
+  /* Edit mode helpers */
+  .edit-only { display: none; }
+  body.mode-edit .edit-only { display: inline-flex; }
+  body.mode-edit .test-only { display: none; }
+  body.mode-edit td.result select { display: none; }
+  body.mode-edit td.result::after { content: "—"; color: #ccc; }
+  body.mode-edit td.note input { background: #fff; border-color: var(--border); }
+
+  /* Toast */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #333; color: #fff; padding: 8px 20px; border-radius: 5px; font-size: 13px; opacity: 0; transition: opacity .3s; pointer-events: none; z-index: 200; }
+  .toast.show { opacity: 1; }
+
+  @media print {
+    .toolbar, .edit-only, .add-row, .btn, .toast { display: none !important; }
+    body { background: #fff; }
+    .container { max-width: 100%; padding: 0; }
+    .section { box-shadow: none; page-break-inside: avoid; }
+    td input, .section-header .section-title input, .section-header .section-ref input, .group-header input { border: none !important; background: transparent !important; color: inherit !important; }
+  }
+</style>
+</head>
+<body class="mode-test">
+
+<div class="toolbar">
+  <h1>UAT Admin <small>— Rider Insure: Block Blast | งวดที่ 2</small></h1>
+  <div class="mode-toggle">
+    <button id="btnModeTest" class="active" onclick="setMode('test')">📋 กรอกผล UAT</button>
+    <button id="btnModeEdit" onclick="setMode('edit')">✏️ แก้ไข Test Cases</button>
+  </div>
+  <span class="save-indicator" id="saveIndicator"></span>
+  <button class="btn btn-light" onclick="exportJSON()">⬇ Export JSON</button>
+  <button class="btn btn-light" onclick="document.getElementById('importFile').click()">⬆ Import JSON</button>
+  <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+  <button class="btn btn-primary" onclick="window.print()">🖨 พิมพ์ / PDF</button>
+</div>
+
+<div class="container">
+
+  <!-- Meta -->
+  <div class="meta-card">
+    <h2>ข้อมูลการทดสอบ</h2>
+    <div class="meta-grid" id="metaGrid"></div>
+  </div>
+
+  <!-- Stats bar -->
+  <div class="footer-bar">
+    <div class="stat">ทั้งหมด <strong id="statTotal">0</strong> รายการ</div>
+    <div class="stat" style="color:var(--success)">Pass: <strong id="statPass">0</strong></div>
+    <div class="stat" style="color:var(--danger)">Fail: <strong id="statFail">0</strong></div>
+    <div class="stat" style="color:#888">N/A: <strong id="statNA">0</strong></div>
+    <div class="stat" style="color:var(--warn)">ยังไม่ทดสอบ: <strong id="statPending">0</strong></div>
+    <div style="flex:1"></div>
+    <button class="btn btn-warn btn-sm edit-only" onclick="addSection()">➕ เพิ่ม Section</button>
+  </div>
+
+  <!-- Sections container -->
+  <div id="sectionsContainer"></div>
+
+  <!-- Sign off -->
+  <div class="sign-section">
+    <h3>ลายเซ็นการรับมอบ</h3>
+    <div class="sign-grid">
+      <div><div class="sign-line">___________________________<span>ผู้ส่งมอบงาน (บจก. โปรเกมมิ่ง)</span></div></div>
+      <div><div class="sign-line">___________________________<span>ผู้ตรวจรับงาน (บจก. ไรเดอร์ อินชัวรันส์ โบรกเกอร์)</span></div></div>
+      <div><div class="sign-line">___________________________<span>วันที่ตรวจรับ</span></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ============== DATA MODEL ==============
+const STORAGE_KEY = 'uat_rider_blockblast_phase2';
+const META_FIELDS = [
+  { key: 'testDate', label: 'วันที่ทดสอบ', type: 'date' },
+  { key: 'build', label: 'Build / Version', type: 'text' },
+  { key: 'tester', label: 'ผู้ทดสอบ', type: 'text' },
+  { key: 'deliverer', label: 'ผู้ส่งมอบ', type: 'text', default: 'บจก. โปรเกมมิ่ง' },
+  { key: 'refDoc', label: 'อ้างอิงเอกสาร', type: 'text', default: 'Proposal ฉบับ 17/08/2569' },
+];
+
+const DEFAULT_DATA = {
+  meta: {
+    testDate: '',
+    build: '',
+    tester: '',
+    deliverer: 'บจก. โปรเกมมิ่ง',
+    refDoc: 'Proposal ฉบับ 17/08/2569',
+  },
+  sections: [
+    {
+      id: 'A',
+      title: 'Core Gameplay Prototype',
+      ref: 'Proposal หน้า 4, 5, 7, 10',
+      groups: [
+        {
+          title: 'A1. Grid & Block พื้นฐาน',
+          ref: 'Proposal หน้า 4',
+          cases: [
+            { id: 'A-01', item: 'โหลดเข้าสู่หน้า Gameplay (Classic)', expected: 'แสดง Grid 8×8 ที่ว่างเปล่า พร้อม Header แสดง SCORE และ BEST SCORE ตามภาพ Proposal หน้า 10', result: '', note: '' },
+            { id: 'A-02', item: 'รับ Block เริ่มต้น 3 ชิ้น', expected: 'เมื่อเข้าเกม ผู้เล่นได้รับ Block รูปทรงต่าง ๆ ครั้งละ 3 ชิ้น แสดงในพื้นที่รองรับด้านล่าง Grid', result: '', note: '' },
+            { id: 'A-03', item: 'การวาง Block ลงบน Grid', expected: 'ลาก/แตะ Block จากพื้นที่รับ แล้ววางลงบนช่องว่างใน Grid 8×8 ได้ ตามตำแหน่งที่เลือก', result: '', note: '' },
+            { id: 'A-04', item: 'ปฏิเสธการวางหากพื้นที่ไม่พอ', expected: 'หาก Block รูปทรงนั้นไม่มีพื้นที่วางได้ในตำแหน่งที่เลือก ระบบไม่อนุญาตให้วาง และ Block คืนสู่พื้นที่รับ', result: '', note: '' },
+            { id: 'A-05', item: 'เติม Row/Column เต็ม → เคลียร์', expected: 'เมื่อวาง Block จน Row หรือ Column ใด Row/Column หนึ่งเต็ม แถวนั้นถูกเคลียร์ออก และได้รับคะแนน', result: '', note: '' },
+            { id: 'A-06', item: 'รับ Block ชุดใหม่หลังใช้ครบ 3 ชิ้น', expected: 'เมื่อวาง Block ครบทั้ง 3 ชิ้น ระบบสุ่ม Block ชุดใหม่ 3 ชิ้นให้ทันที เล่นต่อเนื่องแบบ Endless', result: '', note: '' },
+            { id: 'A-07', item: 'คะแนนเพิ่มขึ้นเมื่อเคลียร์แถว', expected: 'SCORE ที่ Header เพิ่มขึ้นตามจำนวนช่อง/แถวที่เคลียร์ ตามตรรกะใน Rider Score Logic', result: '', note: '' },
+          ]
+        },
+        {
+          title: 'A2. Game Over & Result',
+          ref: 'Proposal หน้า 5, 12',
+          cases: [
+            { id: 'A-08', item: 'ตรวจจับเงื่อนไข Game Over', expected: 'เมื่อไม่มี Block ใดใน 3 ชิ้นปัจจุบันสามารถวางลงบน Grid ได้อีก → เข้าสู่หน้า Result อัตโนมัติ', result: '', note: '' },
+            { id: 'A-09', item: 'หน้า Result แสดงคะแนน', expected: 'หน้า Result แสดง Score และ Best Score พร้อมปุ่ม Play Again และ Back to Menu ตามภาพ Proposal หน้า 12', result: '', note: '' },
+            { id: 'A-10', item: 'ปุ่ม Play Again', expected: 'กดแล้วเริ่มเกมใหม่ทันที (Grid ว่าง, Score = 0, รับ Block ชุดใหม่)', result: '', note: '' },
+            { id: 'A-11', item: 'ปุ่ม Back to Menu', expected: 'กดแล้วกลับสู่หน้า Game Menu ตาม Proposal หน้า 7, 9', result: '', note: '' },
+            { id: 'A-12', item: 'บันทึก Best Score', expected: 'หากคะแนนปัจจุบันมากกว่า Best Score ที่เคยบันทึก → อัปเดต Best Score และแสดงบนหน้า Result และ Gameplay', result: '', note: '' },
+          ]
+        },
+        {
+          title: 'A3. Game Flow',
+          ref: 'Proposal หน้า 7',
+          cases: [
+            { id: 'A-13', item: 'Game Menu → Gameplay (Classic)', expected: 'จาก Game Menu กดปุ่ม Classic Game แล้วเข้าสู่หน้า Gameplay ได้', result: '', note: '' },
+            { id: 'A-14', item: 'Gameplay → Result → Game Menu', expected: 'Flow การเล่นครบ: เข้าเกม → เล่นจนจบ → Result → กลับ Menu ทำงานตามลำดับใน Proposal หน้า 7', result: '', note: '' },
+            { id: 'A-15', item: 'Sidebar Menu ในหน้า Gameplay', expected: 'กดปุ่มเปิด Sidebar จากหน้า Gameplay แสดงเมนู (Classic / Leaderboard / Mission / Settings) ตาม Proposal หน้า 11', result: '', note: '' },
+          ]
+        }
+      ]
+    },
+    {
+      id: 'B',
+      title: 'Gameplay Polish',
+      ref: 'Proposal หน้า 5, 6, 13, 18',
+      groups: [
+        {
+          title: 'B1. Score & Combo Message',
+          ref: 'Proposal หน้า 5, 6',
+          cases: [
+            { id: 'B-01', item: 'Combo: GOOD!', expected: 'เคลียร์ 2 แถวในแนวเดียวกันพร้อมกัน → แสดงข้อความ "GOOD!" พร้อมคะแนนเพิ่ม', result: '', note: '' },
+            { id: 'B-02', item: 'Combo: GREAT!', expected: 'เคลียร์ 3 แถวในแนวเดียวกัน หรือ 1 Row + 1 Column พร้อมกัน → แสดง "GREAT!"', result: '', note: '' },
+            { id: 'B-03', item: 'Combo: AWESOME!', expected: 'เคลียร์ 4 แถวในแนวเดียวกัน หรือ 3 แถวแบบผสม (เช่น 2 Row + 1 Column) → แสดง "AWESOME!"', result: '', note: '' },
+            { id: 'B-04', item: 'Combo: LEGENDARY!', expected: 'เคลียร์ 5+ แถวในแนวเดียวกัน หรือ 4+ แถวแบบผสม (เช่น 2+2 หรือ 3+1) → แสดง "LEGENDARY!"', result: '', note: '' },
+            { id: 'B-05', item: 'เคลียร์ 1 แถว = คะแนนปกติ (ไม่มี Combo)', expected: 'เคลียร์ 1 Row หรือ 1 Column ได้คะแนนปกติ แต่ไม่แสดงเอฟเฟค/Combo Message (ตามหมายเหตุ Proposal หน้า 6)', result: '', note: '' },
+            { id: 'B-06', item: 'Combo Message หายไปหลังเวลา', expected: 'Combo Message แสดงชั่วขณะแล้วหายไป ไม่ค้างบนจอ', result: '', note: '' },
+          ]
+        },
+        {
+          title: 'B2. Preview & Indicator',
+          ref: 'Proposal หน้า 5',
+          cases: [
+            { id: 'B-07', item: 'Preview ตำแหน่งวาง', expected: 'ขณะเลือก Block และลาก/เคลื่อนเหนือ Grid แสดงตำแหน่งที่ Block จะวางลงอย่างชัดเจน', result: '', note: '' },
+            { id: 'B-08', item: 'Indicator แถวที่จะถูกเคลียร์', expected: 'ระบบแสดงแถว/คอลัมน์ที่จะถูกเคลียร์หากวาง Block ในตำแหน่งนั้น (ก่อนยืนยันวาง)', result: '', note: '' },
+            { id: 'B-09', item: 'Preview หายไปเมื่อยก Block ออก', expected: 'เมื่อเคลื่อน Block ออกจาก Grid หรือยกเลิกการเลือก → Preview/Indicator หายไป', result: '', note: '' },
+          ]
+        },
+        {
+          title: 'B3. Settings',
+          ref: 'Proposal หน้า 13',
+          cases: [
+            { id: 'B-10', item: 'เปิดหน้า Settings', expected: 'กดปุ่ม Settings จาก Sidebar หรือ Game Menu → เปิดหน้า Settings แสดง: Sound, Music, Restart, Quit Game', result: '', note: '' },
+            { id: 'B-11', item: 'ปรับระดับเสียงเกม (Sound)', expected: 'ปุ่ม +/- ปรับระดับเสียงเกม (SFX) ได้ และมีผลทันที', result: '', note: '' },
+            { id: 'B-12', item: 'ปรับระดับเสียงเพลง (Music)', expected: 'ปุ่ม +/- ปรับระดับเสียงเพลง (BGM) ได้ และมีผลทันที', result: '', note: '' },
+            { id: 'B-13', item: 'ปุ่ม Restart', expected: 'กด Restart → เริ่มรอบการเล่นใหม่ทันที (ยืนยันก่อนรีสตาร์ท)', result: '', note: '' },
+            { id: 'B-14', item: 'ปุ่ม Quit Game', expected: 'กด Quit Game → ออกจากเกม/กลับสู่ Rider Portal หรือ Game Menu', result: '', note: '' },
+            { id: 'B-15', item: 'ปุ่มปิด Settings (X)', expected: 'กด X ปิดหน้า Settings กลับสู่หน้าก่อนหน้าได้', result: '', note: '' },
+          ]
+        },
+        {
+          title: 'B4. Banner / Logo (Brand Identity)',
+          ref: 'Proposal หน้า 10, 11, 12, 18',
+          cases: [
+            { id: 'B-16', item: 'พื้นที่ Banner/Logo บนหน้า Gameplay', expected: 'หน้า Gameplay มีพื้นที่สำหรับแสดง Banner/Logo ตามภาพ Proposal หน้า 10, 11, 12', result: '', note: '' },
+            { id: 'B-17', item: 'โหลด Banner/Logo จากการตั้งค่า', expected: 'ระบบสามารถโหลด Banner/Logo จาก Config ได้ (อ้างอิง Proposal หน้า 18, 19 — In-game Banner)', result: '', note: '' },
+            { id: 'B-18', item: 'Banner ไม่บดบัง Gameplay', expected: 'Banner/Logo แสดงผลโดยไม่บดบังพื้นที่เล่นเกมหลัก (Grid 8×8)', result: '', note: '' },
+          ]
+        },
+        {
+          title: 'B5. ความสมบูรณ์ของประสบการณ์ (UX Polish)',
+          ref: 'Proposal หน้า 3, 18',
+          cases: [
+            { id: 'B-19', item: 'การตอบสนองต่อการสัมผัส', expected: 'การลาก/วาง Block ตอบสนองทันที ไม่มีอาการ lag ที่รู้สึกได้ชัด', result: '', note: '' },
+            { id: 'B-20', item: 'เอฟเฟคเมื่อเคลียร์แถว', expected: 'มีเอฟเฟคภาพ/เสียงเมื่อเคลียร์แถวสำเร็จ สร้างความรู้สึกสำเร็จ (Proposal หน้า 5, 6)', result: '', note: '' },
+            { id: 'B-21', item: 'โทนสีและ UI สอดคล้องกับ RiderHero', expected: 'สี รูปแบบ UI และ Effect สอดคล้องกับธีมของ RiderHero (Proposal หน้า 18)', result: '', note: '' },
+            { id: 'B-22', item: 'เริ่มต้นง่าย — เข้าใจได้ทันที', expected: 'ผู้ใช้ใหม่เข้าใจกติกาและเริ่มเล่นได้ทันทีโดยไม่ต้องมี tutorial ซับซ้อน (Proposal หน้า 3)', result: '', note: '' },
+            { id: 'B-23', item: 'รองรับการเล่นสั้นและยาว', expected: 'เล่นได้ทุกช่วงเวลา ทั้งเล่นสั้น ๆ ผ่อนคลาย หรือทำคะแนนแข่งขัน (Proposal หน้า 3)', result: '', note: '' },
+          ]
+        }
+      ]
+    }
+  ]
+};
+
+// ============== STATE ==============
+let data = loadData();
+let mode = 'test'; // 'test' | 'edit'
+let saveTimer = null;
+
+function loadData() {
+  try {
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) return JSON.parse(saved);
+  } catch(e) { console.warn('Load error:', e); }
+  return JSON.parse(JSON.stringify(DEFAULT_DATA));
+}
+
+function saveData(showMsg) {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    document.getElementById('saveIndicator').textContent = '✓ บันทึกแล้ว';
+    if (showMsg) showToast('บันทึกเรียบร้อย');
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => { document.getElementById('saveIndicator').textContent = ''; }, 2000);
+  } catch(e) {
+    document.getElementById('saveIndicator').textContent = '⚠ บันทึกไม่ได้';
+  }
+}
+
+function autoSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(() => saveData(false), 500);
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2000);
+}
+
+// ============== MODE ==============
+function setMode(m) {
+  mode = m;
+  document.body.className = 'mode-' + m;
+  document.getElementById('btnModeTest').classList.toggle('active', m === 'test');
+  document.getElementById('btnModeEdit').classList.toggle('active', m === 'edit');
+  render();
+}
+
+// ============== RENDER ==============
+function render() {
+  renderMeta();
+  renderSections();
+  renderStats();
+}
+
+function renderMeta() {
+  const grid = document.getElementById('metaGrid');
+  grid.innerHTML = META_FIELDS.map(f => {
+    const val = data.meta[f.key] || '';
+    return `<div class="meta-field">
+      <label>${f.label}</label>
+      <input type="${f.type}" data-meta="${f.key}" value="${escapeAttr(val)}" placeholder="${f.default || ''}">
+    </div>`;
+  }).join('');
+  // Attach listeners
+  grid.querySelectorAll('input[data-meta]').forEach(inp => {
+    inp.addEventListener('input', () => {
+      data.meta[inp.dataset.meta] = inp.value;
+      autoSave();
+    });
+  });
+}
+
+function renderSections() {
+  const container = document.getElementById('sectionsContainer');
+  container.innerHTML = data.sections.map((sec, si) => renderSection(sec, si)).join('');
+  // Attach all listeners
+  attachListeners();
+}
+
+function renderSection(sec, si) {
+  const groupsHtml = sec.groups.map((g, gi) => renderGroup(g, si, gi)).join('');
+  return `
+    <div class="section" data-section="${si}">
+      <div class="section-header">
+        <span class="pill">${escapeHtml(sec.id)}</span>
+        <div class="section-title">
+          <input type="text" data-field="sectionTitle" data-si="${si}" value="${escapeAttr(sec.title)}" placeholder="ชื่อ Section">
+        </div>
+        <div class="section-ref">
+          <input type="text" data-field="sectionRef" data-si="${si}" value="${escapeAttr(sec.ref)}" placeholder="อ้างอิง">
+        </div>
+        <button class="btn btn-danger btn-sm edit-only" onclick="deleteSection(${si})">🗑 ลบ Section</button>
+      </div>
+      ${groupsHtml}
+      <div class="add-row">
+        <button class="add-btn edit-only" onclick="addGroup(${si})">➕ เพิ่ม Group</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderGroup(g, si, gi) {
+  const rowsHtml = g.cases.map((c, ci) => renderCase(c, si, gi, ci)).join('');
+  return `
+    <div class="group" data-group="${gi}">
+      <div class="group-header">
+        <div class="group-title">
+          <input type="text" data-field="groupTitle" data-si="${si}" data-gi="${gi}" value="${escapeAttr(g.title)}" placeholder="ชื่อ Group">
+        </div>
+        <div class="group-ref">
+          <input type="text" data-field="groupRef" data-si="${si}" data-gi="${gi}" value="${escapeAttr(g.ref)}" placeholder="อ้างอิง">
+        </div>
+        <button class="btn btn-danger btn-sm edit-only" onclick="deleteGroup(${si}, ${gi})">🗑 ลบ Group</button>
+      </div>
+      <table>
+        <thead>
+          <tr><th style="width:50px">ID</th><th style="width:22%">รายการทดสอบ</th><th style="width:36%">ผลที่คาดหวัง</th><th style="width:90px">ผล</th><th style="width:18%">หมายเหตุ</th><th class="edit-only" style="width:36px"></th></tr>
+        </thead>
+        <tbody>
+          ${rowsHtml}
+        </tbody>
+      </table>
+      <div style="padding: 6px 0 10px;">
+        <button class="add-btn edit-only" onclick="addCase(${si}, ${gi})">➕ เพิ่ม Test Case</button>
+      </div>
+    </div>
+  `;
+}
+
+function renderCase(c, si, gi, ci) {
+  return `
+    <tr data-case data-si="${si}" data-gi="${gi}" data-ci="${ci}">
+      <td class="id"><input type="text" data-field="caseId" value="${escapeAttr(c.id)}" placeholder="ID"></td>
+      <td class="item"><input type="text" data-field="caseItem" value="${escapeAttr(c.item)}" placeholder="รายการทดสอบ"></td>
+      <td class="exp"><input type="text" data-field="caseExpected" value="${escapeAttr(c.expected)}" placeholder="ผลที่คาดหวัง"></td>
+      <td class="result">
+        <select data-field="caseResult">
+          <option value=""${c.result === '' ? ' selected' : ''}>—</option>
+          <option value="Pass"${c.result === 'Pass' ? ' selected' : ''}>Pass</option>
+          <option value="Fail"${c.result === 'Fail' ? ' selected' : ''}>Fail</option>
+          <option value="N/A"${c.result === 'N/A' ? ' selected' : ''}>N/A</option>
+        </select>
+      </td>
+      <td class="note"><input type="text" data-field="caseNote" value="${escapeAttr(c.note)}" placeholder="หมายเหตุ"></td>
+      <td class="actions edit-only"><button onclick="deleteCase(${si}, ${gi}, ${ci})" title="ลบ">×</button></td>
+    </tr>
+  `;
+}
+
+function attachListeners() {
+  // Section title/ref
+  document.querySelectorAll('input[data-field="sectionTitle"]').forEach(inp => {
+    inp.addEventListener('input', () => { data.sections[+inp.dataset.si].title = inp.value; autoSave(); });
+  });
+  document.querySelectorAll('input[data-field="sectionRef"]').forEach(inp => {
+    inp.addEventListener('input', () => { data.sections[+inp.dataset.si].ref = inp.value; autoSave(); });
+  });
+  // Group title/ref
+  document.querySelectorAll('input[data-field="groupTitle"]').forEach(inp => {
+    inp.addEventListener('input', () => { data.sections[+inp.dataset.si].groups[+inp.dataset.gi].title = inp.value; autoSave(); });
+  });
+  document.querySelectorAll('input[data-field="groupRef"]').forEach(inp => {
+    inp.addEventListener('input', () => { data.sections[+inp.dataset.si].groups[+inp.dataset.gi].ref = inp.value; autoSave(); });
+  });
+  // Case fields
+  document.querySelectorAll('tr[data-case]').forEach(tr => {
+    const si = +tr.dataset.si, gi = +tr.dataset.gi, ci = +tr.dataset.ci;
+    const c = data.sections[si].groups[gi].cases[ci];
+    tr.querySelector('[data-field="caseId"]').addEventListener('input', (e) => { c.id = e.target.value; autoSave(); });
+    tr.querySelector('[data-field="caseItem"]').addEventListener('input', (e) => { c.item = e.target.value; autoSave(); });
+    tr.querySelector('[data-field="caseExpected"]').addEventListener('input', (e) => { c.expected = e.target.value; autoSave(); });
+    tr.querySelector('[data-field="caseResult"]').addEventListener('change', (e) => { c.result = e.target.value; autoSave(); renderStats(); });
+    tr.querySelector('[data-field="caseNote"]').addEventListener('input', (e) => { c.note = e.target.value; autoSave(); });
+  });
+}
+
+// ============== CRUD ==============
+function addSection() {
+  const id = String.fromCharCode(65 + data.sections.length); // A, B, C, ...
+  data.sections.push({
+    id: id,
+    title: 'Section ใหม่',
+    ref: '',
+    groups: [{ title: 'Group 1', ref: '', cases: [{ id: id + '-01', item: '', expected: '', result: '', note: '' }] }]
+  });
+  saveData(true);
+  render();
+  showToast('เพิ่ม Section แล้ว');
+}
+
+function deleteSection(si) {
+  if (!confirm('ต้องการลบ Section นี้ทั้งหมดหรือไม่?')) return;
+  data.sections.splice(si, 1);
+  saveData(true);
+  render();
+  showToast('ลบ Section แล้ว');
+}
+
+function addGroup(si) {
+  data.sections[si].groups.push({
+    title: 'Group ใหม่',
+    ref: '',
+    cases: [{ id: data.sections[si].id + '-' + String(data.sections[si].groups.length + 1).padStart(2, '0'), item: '', expected: '', result: '', note: '' }]
+  });
+  saveData(true);
+  render();
+  showToast('เพิ่ม Group แล้ว');
+}
+
+function deleteGroup(si, gi) {
+  if (!confirm('ต้องการลบ Group นี้ทั้งหมดหรือไม่?')) return;
+  data.sections[si].groups.splice(gi, 1);
+  saveData(true);
+  render();
+  showToast('ลบ Group แล้ว');
+}
+
+function addCase(si, gi) {
+  const sec = data.sections[si];
+  const grp = sec.groups[gi];
+  const newNum = grp.cases.length + 1;
+  grp.cases.push({
+    id: sec.id + '-' + String(newNum).padStart(2, '0'),
+    item: '',
+    expected: '',
+    result: '',
+    note: ''
+  });
+  saveData(true);
+  render();
+  showToast('เพิ่ม Test Case แล้ว');
+}
+
+function deleteCase(si, gi, ci) {
+  data.sections[si].groups[gi].cases.splice(ci, 1);
+  saveData(true);
+  render();
+  showToast('ลบ Test Case แล้ว');
+}
+
+// ============== STATS ==============
+function renderStats() {
+  let total = 0, pass = 0, fail = 0, na = 0, pending = 0;
+  data.sections.forEach(sec => {
+    sec.groups.forEach(g => {
+      g.cases.forEach(c => {
+        total++;
+        if (c.result === 'Pass') pass++;
+        else if (c.result === 'Fail') fail++;
+        else if (c.result === 'N/A') na++;
+        else pending++;
+      });
+    });
+  });
+  document.getElementById('statTotal').textContent = total;
+  document.getElementById('statPass').textContent = pass;
+  document.getElementById('statFail').textContent = fail;
+  document.getElementById('statNA').textContent = na;
+  document.getElementById('statPending').textContent = pending;
+}
+
+// ============== EXPORT / IMPORT ==============
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  const d = new Date();
+  a.download = `UAT-BlockBlast-Phase2-${d.getFullYear()}${String(d.getMonth()+1).padStart(2,'0')}${String(d.getDate()).padStart(2,'0')}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Export JSON แล้ว');
+}
+
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!imported.sections || !imported.meta) throw new Error('Invalid format');
+      data = imported;
+      saveData(true);
+      render();
+      showToast('Import สำเร็จ');
+    } catch(err) {
+      alert('ไฟล์ไม่ถูกต้อง: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+  event.target.value = '';
+}
+
+// ============== UTILS ==============
+function escapeHtml(s) { return (s || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function escapeAttr(s) { return (s || '').replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ============== INIT ==============
+render();
+</script>
+
+</body>
+</html>
