@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Test Case (UAT) — Rider Block Shield UAT ครั้งที่ 2</title>
+<style>
+  @page { size: A4; margin: 14mm 12mm; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Sarabun','Segoe UI',Tahoma,sans-serif; margin: 0; color: #1a1a1a; font-size: 13px; background: #f5f5f5; }
+  .toolbar { position: sticky; top: 0; z-index: 100; background: #1f3a5f; color: #fff; padding: 10px 20px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+  .toolbar h1 { font-size: 15px; margin: 0; flex: 1; min-width: 200px; }
+  .btn { padding: 6px 14px; border: none; border-radius: 4px; cursor: pointer; font-size: 12.5px; font-family: inherit; }
+  .btn-light { background: rgba(255,255,255,.18); color: #fff; }
+  .btn-light:hover { background: rgba(255,255,255,.3); }
+  .btn-success { background: #1a7a3a; color: #fff; }
+  .btn-success:hover { background: #155f2e; }
+  .btn-primary { background: #fff; color: #1f3a5f; font-weight: 600; }
+  .btn-danger { background: #b3261e; color: #fff; }
+  .btn-danger:hover { background: #8a1d18; }
+
+  .container { max-width: 1180px; margin: 0 auto; padding: 20px; }
+  .doc { background: #fff; border-radius: 6px; padding: 28px 32px; box-shadow: 0 1px 4px rgba(0,0,0,.12); margin-bottom: 24px; }
+  h1.doc-title { font-size: 20px; margin: 0 0 2px; color: #1f3a5f; }
+  .doc-sub { color: #555; font-size: 13px; margin-bottom: 4px; }
+  .doc-meta { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; background: #f0f4f8; padding: 12px 16px; border-radius: 6px; margin: 14px 0 20px; }
+  .doc-meta label { display: block; color: #1f3a5f; font-weight: 600; font-size: 11px; text-transform: uppercase; }
+  .doc-meta input { width: 100%; padding: 4px 8px; border: 1px solid #c8d6e0; border-radius: 3px; font-size: 12.5px; font-family: inherit; }
+
+  h2.sec { font-size: 16px; color: #fff; background: #1f3a5f; padding: 8px 14px; border-radius: 4px; margin: 28px 0 4px; }
+  .sec-ref { font-size: 11px; color: #777; margin: 4px 0 10px; }
+  h3.grp { font-size: 14px; color: #1f3a5f; margin: 18px 0 8px; border-bottom: 2px solid #e0e8f0; padding-bottom: 4px; }
+  h3.grp .ref { float: right; font-size: 10.5px; font-weight: 400; color: #999; }
+
+  table { width: 100%; border-collapse: collapse; }
+  th, td { border: 1px solid #c8d6e0; padding: 7px 9px; vertical-align: top; font-size: 12px; text-align: left; }
+  th { background: #eaf0f6; color: #1f3a5f; font-weight: 600; }
+  td.id { width: 44px; text-align: center; font-weight: 600; color: #1f3a5f; background: #f7f9fb; }
+  td.item { width: 24%; font-weight: 500; }
+  td.exp { width: 38%; }
+
+  td.result { width: 84px; text-align: center; }
+  td.result select { width: 100%; padding: 3px; font-size: 12px; border: 1px solid #c8d6e0; border-radius: 3px; font-family: inherit; }
+  tr.r-Pass td { background: #e8f5e9; }
+  tr.r-Pass td.result select { color: #1a7a3a; font-weight: 700; }
+  tr.r-Fail td { background: #fdecea; }
+  tr.r-Fail td.id { border-left: 4px solid #d93025; background: #fbd9d6; color: #b3261e; font-weight: 700; }
+  tr.r-Fail td.item { color: #b3261e; font-weight: 600; }
+  tr.r-Fail td.result select { color: #b3261e; font-weight: 700; }
+  td.note { width: 16%; }
+  td.note input { width: 100%; padding: 3px 6px; border: 1px solid #c8d6e0; border-radius: 3px; font-size: 11.5px; font-family: inherit; }
+
+  .stats { display: flex; gap: 18px; flex-wrap: wrap; background: #f0f4f8; border-radius: 6px; padding: 10px 16px; margin: 6px 0 18px; font-size: 12.5px; color: #555; }
+  .stats strong { color: #1f3a5f; font-size: 15px; }
+
+  .sign { margin-top: 32px; display: flex; gap: 32px; }
+  .sign > div { flex: 1; }
+  .sign-line { border-top: 1.5px solid #333; margin-top: 48px; padding-top: 6px; font-size: 12px; }
+  .sign-line span { display: block; color: #777; font-size: 11px; }
+
+  .banner { background: #e8f5e9; border: 1px solid #a5d6a7; border-radius: 6px; padding: 10px 16px; margin-bottom: 16px; font-size: 12.5px; color: #2e7d32; }
+
+  @media print {
+    .toolbar, .banner { display: none !important; }
+    body { background: #fff; }
+    .container { max-width: 100%; padding: 0; }
+    .doc { box-shadow: none; padding: 0; }
+    td.note input, .doc-meta input { border: none; background: transparent; }
+    tr { page-break-inside: avoid; }
+    tr.r-Pass td { background: #e8f5e9 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    tr.r-Fail td { background: #fbd9d6 !important; -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
+    tr.r-Fail td.id { border-left: 4px solid #d93025 !important; }
+    h2.sec { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    th { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <h1>Test Case (UAT) — Rider Block Shield UAT ครั้งที่ 2</h1>
+  <button class="btn btn-success" onclick="saveProgress()">💾 บันทึกความคืบหน้า</button>
+  <button class="btn btn-light" onclick="document.getElementById('resumeFile').click()">📂 โหลดทำต่อ</button>
+  <input type="file" id="resumeFile" accept=".json" style="display:none" onchange="resumeFromFile(event)">
+  <button class="btn btn-primary" onclick="window.print()">🖨 Export PDF / พิมพ์</button>
+  <button class="btn btn-danger" onclick="resetAll()">🔄 รีเซ็ตข้อมูล</button>
+</div>
+
+<div class="container">
+  <div class="banner">
+    ℹ️ <strong>บันทึกอัตโนมัติ</strong>ในเครื่องนี้แล้ว — หากยังเทสไม่เสร็จวันนี้ กด <strong>💾 บันทึกความคืบหน้า</strong> เก็บไฟล์ไว้ วันต่อไปกด <strong>📂 โหลดทำต่อ</strong> เพื่อทำต่อได้ เทสเสร็จแล้วกด <strong>🖨 Export PDF</strong>
+  </div>
+
+  <div class="doc">
+    <h1 class="doc-title">Test Case (UAT)</h1>
+    <div class="doc-sub">Rider Block Shield — UAT ครั้งที่ 2</div>
+    <div class="doc-sub" style="color:#999;font-size:11.5px">อ้างอิง: - · สร้างเมื่อ 5 ตุลาคม 2569 17:38 น.</div>
+
+    <div class="doc-meta">
+      <div><label>วันที่ทดสอบ</label><input type="date" data-m="testDate"></div>
+      <div><label>Build / Version</label><input type="text" data-m="build" placeholder="เช่น v1.0.0"></div>
+      <div><label>ผู้ทดสอบ</label><input type="text" data-m="tester" placeholder="ชื่อ-นามสกุล"></div>
+      <div><label>ผู้ส่งมอบ</label><input type="text" data-m="vendor" value="บจก. โปรเกมมิ่ง"></div>
+    </div>
+
+    <div class="stats">
+      <span>ทั้งหมด <strong id="stTotal">0</strong></span>
+      <span style="color:#1a7a3a">Pass <strong id="stPass">0</strong></span>
+      <span style="color:#b3261e">Fail <strong id="stFail">0</strong></span>
+      <span style="color:#888">N/A <strong id="stNA">0</strong></span>
+      <span style="color:#e65100">ยังไม่ทดสอบ <strong id="stPend">0</strong></span>
+    </div>
+
+    <div id="body"></div>
+
+    <div class="sign">
+      <div><div class="sign-line">___________________________<span>ผู้ส่งมอบงาน (บจก. โปรเกมมิ่ง)</span></div></div>
+      <div><div class="sign-line">___________________________<span>ผู้ตรวจรับงาน (บจก. ไรเดอร์ อินชัวรันส์ โบรกเกอร์)</span></div></div>
+      <div><div class="sign-line">___________________________<span>วันที่ตรวจรับ</span></div></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const INITIAL = {"project":{"name":"Rider Block Shield","phase":"UAT ครั้งที่ 2","vendor":"บจก. โปรเกมมิ่ง","client":"บจก. ไรเดอร์ อินชัวรันส์ โบรกเกอร์","ref":""},"sections":[{"id":"A","title":"Game Flow & Title Game","ref":"","groups":[{"title":"A1. Game Flow","ref":"","cases":[{"id":"A-01","item":"เข้าด้วย User ที่ถูกส่งมาจาก Api ได้","expected":"เปิดเกม > Login ด้วย user ของทาง Rider ได้ ","note":""},{"id":"A-02","item":"Game Menu แสดงปุ่มเข้าฟีเจอร์ต่าง ๆ ครบ","expected":"หน้าเมนูมีปุ่มสำหรับเข้าฟีเจอร์ภายในเกมครบดังนี้ ปุ่ม Setting, Classic Game, Leaderboard,Mission, แสดงจำนวน point","note":""},{"id":"A-03","item":"ปุ่ม Setting ","expected":"เปิดแล้วแสดงหน้า Setting ประกอบด้วย Sound,Music,Profile,Quit Game","note":""},{"id":"A-04","item":"ปุ่ม Classic Game","expected":"กดแล้วเข้าสู่หน้า Gameplay ","note":""},{"id":"A-05","item":"ปุ่ม Leaderboard ","expected":"กดแล้วเข้าสู่หน้า Learderboard","note":""},{"id":"A-06","item":"ปุ่ม Mission","expected":"กดแล้วเข้าสู่หน้า Mission ","note":""},{"id":"A-07","item":"จุดแสดงจำนวน point ","expected":"แสดงจำนวน point ที่มีเป็นตัวเลข ","note":""}]},{"title":"A2. Setting Title","ref":"","cases":[{"id":"A-08 ","item":"เปิดหน้า Settings","expected":"กดปุ่ม Settings → เปิดหน้า Settings แสดง: Sound, Music, Profile, Quiz Game","note":""},{"id":"A-09","item":"ปรับระดับเสียงเกม (Sound)","expected":"ปรับระดับเสียงเกม (SFX) ได้ และมีผลทันที","note":""},{"id":"A-10","item":"ปรับระดับเสียงเพลง (Music)","expected":"ปรับระดับเสียงเพลง (BGM) ได้ และมีผลทันที","note":""},{"id":"A-11* ยังไม่สามารถทดสอบได้","item":"ปุ่ม Quit Game *ต้องทดสอบหลังเชื่อมกับ Super App","expected":"กด Quit Game → ออกจากเกม/ไปที่ Super App","note":""},{"id":"A-12","item":"ปุ่มปิด ลูกศรกลับ","expected":"กด ลูกศรกลับ ปิดหน้า Settings กลับสู่หน้าก่อนหน้าได้","note":""},{"id":"A-13","item":"ปุ่ม Profile","expected":"กดแล้วแสดงหน้า Profile ","note":""}]},{"title":"A3. Profile ","ref":"","cases":[{"id":"A-14","item":"Name แสดง/แก้ไข ชื่อ ","expected":"สามารถแก้ไขชื่อได้ และเมื่อแก้ไขแล้ว กลับมาดูอีกครั้งจะต้องเป็นชื่อล่าสุดที่ตั้งไว้","note":""},{"id":"A-15","item":"My Group แสดงชื่อกลุ่ม ","expected":"แสดงชื่อกลุ่มที่ถูกส่งมาจาก api ได้ถูกต้อง และเมื่อเลือกกลุ่มแล้ว จะต้องบันทึกชื่อกลุ่มที่ตั้งค่าไว้ล่าสุด * กรณีไม่มีกลุ่มจะไม่มีข้อมูลกลุ่มแสดง","note":""}]}]},{"id":"B","title":"Core Gameplay — Classic Mode","ref":"","groups":[{"title":"B1. Grid & Block พื้นฐาน","ref":"","cases":[{"id":"B-01","item":"โหลดหน้า Gameplay (Classic)","expected":"แสดง Grid 8×8 พร้อมคะแนน ","note":""},{"id":"B-02","item":"รับ Block เริ่มต้น 3 ชิ้น","expected":"ได้รับ Block รูปทรงต่าง ๆ ครั้งละ 3 ชิ้น","note":""},{"id":"B-03","item":"เลือกตำแหน่งวาง Block ลง Grid","expected":"วางลงช่องว่างบน Grid 8×8 ได้ตามตำแหน่งที่เลือก","note":""},{"id":"B-04","item":"ปฏิเสธการวางเมื่อพื้นที่ไม่พอ","expected":"วางไม่ได้ Block คืนพื้นที่รับ","note":""},{"id":"B-05","item":"เติม Row/Column เต็ม → เคลียร์","expected":"แถวที่เต็มถูกเคลียร์และได้รับคะแนน","note":""},{"id":"B-06","item":"รับ Block ชุดใหม่หลังใช้ครบ 3 ชิ้น","expected":"สุ่มชุดใหม่ให้ทันที เล่นต่อเนื่องแบบ Endless","note":""},{"id":"B-07","item":"คะแนนเพิ่มขึ้นเมื่อเคลียร์แถว","expected":"SCORE เพิ่มตามผลงานที่ทำได้ตามเงื่อนไข","note":""}]}]},{"id":"C","title":"Score & Combo Message","ref":"","groups":[{"title":"C1. Combo Message & เงื่อนไข","ref":"","cases":[{"id":"C-01","item":"Combo: GOOD!","expected":"เคลียร์ 2 แถวในแนวเดียวกันพร้อมกัน แสดง fx พร้อม logo","note":""},{"id":"C-02","item":"Combo: GREAT!","expected":"เคลียร์ 2 แถว แบบผสม เช่น 1 Row + 1 Column แสดง fx พร้อม logo","note":""},{"id":"C-03","item":"Combo: AWESOME!","expected":"เคลียร์ 3 แถว ในแนวเดียวกันพร้อมกัน แสดง fx พร้อม logo","note":""},{"id":"C-04","item":"Combo: LEGENDARY!","expected":"เคลียร์ 3 แถว แบบผสม เช่น 2 Row + 1 Column / 1 Row + 2 Column   หรือ เคลียร์ 4 แถวขึ้นไป แบบใดก็ได้ แสดง fx พร้อม logo","note":""},{"id":"C-05","item":"เคลียร์ 1 แถว","expected":"เคลียร์ 1 Row หรือ 1 Column ได้คะแนนปกติ แต่ไม่แสดงเอฟเฟค/Combo Message ","note":""},{"id":"C-07","item":"Combo Message หายไปหลังแสดง","expected":"แสดงชั่วขณะแล้วหาย ไม่ค้างบนจอ","note":""},{"id":"C-08","item":"แสดง Logo ถูกต้องใน Combo  ","expected":"Logo แสดงถูกต้องตามการตั้งค่าจากระบบหลังบ้าน ","note":""}]}]},{"id":"D","title":"Preview & Indicator","ref":"","groups":[{"title":"D1. Preview & Indicator","ref":"","cases":[{"id":"D-01","item":"แสดงตำแหน่งการวาง","expected":"ขณะเลือกวาง แสดงตำแหน่งที่ Block จะลงอย่างชัดเจน","note":""},{"id":"D-02","item":"แสดงแถวที่จะถูกเคลียร์","expected":"แสดงแถว/คอลัมน์ที่จะเคลียร์ก่อนยืนยันวาง","note":""},{"id":"D-03","item":"Preview หายเมื่อยกเลิก","expected":"ยก Block ออก → Preview/Indicator หายไป","note":""}]}]},{"id":"E","title":"Game Over & Result","ref":"","groups":[{"title":"E1. Game Over & Result","ref":"","cases":[{"id":"E-01","item":"เงื่อนไข Game Over","expected":"ไม่มี Block วางได้ → จบเกมเข้าหน้า Result อัตโนมัติ","note":""},{"id":"E-02","item":"Result แสดงคะแนนครบ","expected":"แสดงคะแนนสูงสุดที่เคยทำได้ + คะแนนรอบปัจจุบัน","note":""},{"id":"E-03","item":"ปุ่ม Play Again","expected":"เริ่มรอบใหม่ทันที (Grid ว่าง, Score = 0)","note":""},{"id":"E-04","item":"ปุ่ม Home","expected":"กลับสู่หน้า Title ได้","note":""},{"id":"E-05","item":"บันทึกคะแนนสูงสุด (Best Score)","expected":"ทำคะแนนเกินสถิติ → อัปเดตคะแนนสูงสุดแสดงถูกต้อง (ที่ Learderboard) ","note":""}]}]},{"id":"F","title":"Settings Gameplay","ref":"","groups":[{"title":"F1. In-game Pause Menu","ref":"","cases":[{"id":"F-01","item":"กดปุ่ม Setting ระหว่างเล่น","expected":"เปิดแสดงเมนู Sound, Music, Restart , Home, Mission, Learderboard, แสดงจำนวน point","note":""},{"id":"F-02","item":"ปรับระดับเสียงเกม (Sound)","expected":"ปรับระดับเสียงเกม (SFX) ได้ และมีผลทันที","note":""},{"id":"F-03","item":"ปรับระดับเสียงเพลง (Music)","expected":"ปรับระดับเสียงเกม (SFX) ได้ และมีผลทันที","note":""},{"id":"F-04","item":"ปุ่ม Mission","expected":"กดแล้วแสดงหน้า Mission","note":""},{"id":"F-05","item":"ปุ่ม Learderboard","expected":"กดแล้วแสดงหน้า Learderboard","note":""},{"id":"F-06","item":"ปุ่ม Restart","expected":"กดแล้วเริ่มเล่นหน้า gameplay ใหม่","note":""},{"id":"F-07","item":"ปุ่ม Home","expected":"กดแล้วกลับไปหน้า Title","note":""}]}]},{"id":"G","title":"ระบบ Mission","ref":"","groups":[{"title":"G1. Daily / Weekly Mission","ref":"","cases":[{"id":"G-01","item":"หน้า Mission แสดง Daily + Weekly","expected":"แสดงชุดภารกิจประจำวันและประจำสัปดาห์","note":""},{"id":"G-02","item":"เล่นเกมแล้วความคืบหน้า Mission อัปเดต","expected":"Mission เชื่อมกับการเล่นหลัก ","note":""},{"id":"G-03","item":"ทำ Daily Mission ครบทั้งชุด","expected":"ได้รับรางวัล Point","note":""},{"id":"G-04","item":"ทำ Weekly Mission ครบทั้งชุด","expected":"ได้รับรางวัล Point","note":""},{"id":"G-05","item":"รอบภารกิจรีเซ็ตตามรอบ","expected":"Daily รีเซ็ตรายวัน / Weekly รีเซ็ตรายสัปดาห์","note":""},{"id":"G-06","item":"point บันทึกเก็บไว้เมื่อเข้าเกมมาใหม่ ","expected":"กดรับ point แล้ว point จะต้องเพิ่มขึ้นและ point จะต้องถูกบันทึกเก็บไว้เมื่อเข้าเกมครั้งถัดไป ","note":""}]}]},{"id":"H","title":"Seasonal Leaderboard","ref":"","groups":[{"title":"H1. Seasonal Leaderboard","ref":"","cases":[{"id":"H-01","item":"จัดอันดับจากคะแนนดีที่สุดใน Season","expected":"ใช้ Season Best Ranking ไม่ใช่คะแนนสะสมรวม","note":""},{"id":"H-02","item":"สลับดูตารางอันดับ Group / All","expected":"เลือกดูอันดับในกลุ่มตนเอง หรือรวมทุกคนได้ *กรณีไม่มีกลุ่มจะไม่สามารถดูแบบกลุ่มได้","note":""},{"id":"H-03","item":"เข้าสู่ Season ถัดไป","expected":"เริ่มรอบแข่งขันใหม่ คะแนนรีเซ็ตตาม Season","note":""},{"id":"H-04","item":"อันดับอัปเดตเมื่อทำคะแนนใหม่","expected":"คะแนนดีกว่าเดิม → อันดับใน Leaderboard ปรับตาม","note":""}]}]},{"id":"I","title":"การเชื่อมต่อ  Super App","ref":"","groups":[{"title":"I1. ข้อมูลสมาชิก & แต้มรางวัล","ref":"","cases":[{"id":"I-01","item":"เชื่อมข้อมูลสมาชิกผ่าน API","expected":"ที่หน้า Profile ระบบจำแนกกลุ่มของผู้ใช้และแสดงได้ถูกต้อง *กรณีไม่มีกลุ่มจะต้องแสดง \"ยังไม่มีกลุ่ม\" ","note":""}]}]},{"id":"K","title":"ระบบหลังบ้าน (Admin) สำหรับ Admin ","ref":"Proposal หน้า 18","groups":[{"title":"K1.Visual Setting ","ref":"","cases":[{"id":"K-01","item":"Default Presets ","expected":"แก้ไขชื่อ Presets ได้ แต่ไม่สามารถแก้ไขข้อมูลการตั้งค่าภายในได้","note":""},{"id":"K-02","item":"เพิ่ม Presets ใหม่ ","expected":"กดปุ่ม + เพื่อเพิ่ม Presets ใหม่ได้ ","note":""},{"id":"K-03","item":"เลือก Presets ที่ใช้ ","expected":"กดปุ่ม ดาว เพื่อเลือก Presets ที่ต้องการใช้ได้ เมื่อกดแล้วจะต้องมี pop up ยืนยันการเลือก","note":""},{"id":"K-04","item":"เมื่อสร้าง Presets แล้ว (ยกเว้น Default) จะสามารถแก้ข้อมูลภายในได้ ","expected":"แสดงข้อมูลที่แก้ไขได้ Gameplay background color,Banner,Logo ","note":""},{"id":"K-05","item":"การตั้งค่า  Gameplay background color","expected":"กดที่ปุ่มแก้ไขค่าสี หรือเลือก panel color ได้ เมื่อกดบันทึก ค่าสี preview เปลี่ยนตามค่าสีที่เลือก ","note":""},{"id":"K-06","item":"การตั้งค่า Banner","expected":"กดปุ่มแก้ไข แสดงภาพปัจจุบัน เมื่อเลือกภาพใหม่เข้าไปแสดงรูปภาพใหม่ได้ถูกต้อง และเมื่อกดยืนยัน ภาพ preview เปลี่ยนเป็นภาพใหม่ได้ถูกต้อง","note":""},{"id":"K-07","item":"การตั้งค่า Logo ","expected":"กดปุ่มแก้ไข แสดงภาพ Logo ปัจจุบัน เมื่อเลือกภาพ Logo ใหม่เข้าไปแสดงรูปภาพใหม่ได้ถูกต้อง และเมื่อกดยืนยัน ภาพ preview เปลี่ยนเป็นภาพใหม่ได้ถูกต้อง","note":""}]},{"title":"K2. Mission","ref":"","cases":[{"id":"K-08","item":"สามารถกดปิด Mission ได้ ","expected":"เมื่อกดปิด Mission ระบบหน้าบ้านจะไม่มีการแสดงข้อมูลเกี่ยวกับ Mission ","note":""}]},{"title":"K3. Learderboard","ref":"","cases":[{"id":"K-09","item":"เพิ่ม Season ","expected":"ตั้งชื่อและกดปุ่มเพิ่ม Season ได้ ","note":""},{"id":"K-10","item":"การเข้าดูข้อมูลคะแนน ","expected":"สามารถเข้าดูคะแนนของแต่ละ Season แบ่งตามกลุ่ม และ Player ทั้งหมดได้ ","note":""},{"id":"K-11","item":"Export CSV","expected":"สามารถเลือก Export ข้อมูลแต่ละ Season ได้","note":""}]},{"title":"K4. Player Admin","ref":"","cases":[{"id":"K-12","item":"ค้นหาผู้เล่น ","expected":"สามารถพิมในช่องค้นหาเพื่อค้นหาผู้เล่นได้ ","note":""},{"id":"K-13","item":"ดูรายละเอียดของผู้เล่น ","expected":"คลิกที่ปุ่มดูประวัติของผู้เล่น และการรับเหรียญได้","note":""}]}]}]};
+const KEY = 'uat_client2_' + (INITIAL.project.name || 'proj').replace(/[^a-zA-Z0-9ก-๙]/g, '_').slice(0, 40);
+
+// โครงสร้าง test cases ใช้จากไฟล์นี้ (ฉบับล่าสุดจากผู้สร้าง) เสมอ
+// localStorage ดึงกลับมาเฉพาะผลที่กรอก + ข้อมูลผู้ทดสอบ เพื่อทำต่อได้
+let data = JSON.parse(JSON.stringify(INITIAL));
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+  if (saved) { data.results = saved.results || {}; data.meta = saved.meta || {}; }
+} catch(e) {}
+if (!data.results) data.results = {};
+if (!data.meta) data.meta = {};
+
+function save() { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch(e) {} }
+let t = null;
+function autoSave() { clearTimeout(t); t = setTimeout(save, 400); }
+
+function esc(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+function render() {
+  document.querySelectorAll('[data-m]').forEach(inp => {
+    inp.value = data.meta[inp.dataset.m] || '';
+    inp.oninput = () => { data.meta[inp.dataset.m] = inp.value; autoSave(); };
+  });
+  let html = '';
+  data.sections.forEach(sec => {
+    html += '<h2 class="sec">' + esc(sec.id + '. ' + sec.title) + '</h2>';
+    if (sec.ref) html += '<div class="sec-ref">อ้างอิง: ' + esc(sec.ref) + '</div>';
+    sec.groups.forEach(g => {
+      html += '<h3 class="grp">' + esc(g.title) + (g.ref ? '<span class="ref">' + esc(g.ref) + '</span>' : '') + '</h3>';
+      html += '<table><thead><tr><th>ID</th><th>รายการทดสอบ</th><th>ผลที่คาดหวัง</th><th>ผล</th><th>หมายเหตุ</th></tr></thead><tbody>';
+      g.cases.forEach(c => {
+        const r = data.results[c.id] || {};
+        html += '<tr class="r-' + esc(r.result || '') + '" data-cid="' + esc(c.id) + '">' +
+          '<td class="id">' + esc(c.id) + '</td>' +
+          '<td class="item">' + esc(c.item) + '</td>' +
+          '<td class="exp">' + esc(c.expected) + '</td>' +
+          '<td class="result"><select data-act="result"><option value="">—</option><option' + (r.result==='Pass'?' selected':'') + '>Pass</option><option' + (r.result==='Fail'?' selected':'') + '>Fail</option><option' + (r.result==='N/A'?' selected':'') + '>N/A</option></select></td>' +
+          '<td class="note"><input type="text" data-act="note" value="' + esc(r.note || '') + '" placeholder="หมายเหตุ"></td></tr>';
+      });
+      html += '</tbody></table>';
+    });
+  });
+  document.getElementById('body').innerHTML = html;
+  document.querySelectorAll('tr[data-cid]').forEach(tr => {
+    const cid = tr.dataset.cid;
+    tr.querySelector('[data-act="result"]').onchange = (e) => {
+      data.results[cid] = data.results[cid] || {};
+      data.results[cid].result = e.target.value;
+      tr.className = 'r-' + e.target.value;
+      autoSave(); renderStats();
+    };
+    tr.querySelector('[data-act="note"]').oninput = (e) => {
+      data.results[cid] = data.results[cid] || {};
+      data.results[cid].note = e.target.value;
+      autoSave();
+    };
+  });
+  renderStats();
+}
+
+function renderStats() {
+  let total=0, pass=0, fail=0, na=0;
+  data.sections.forEach(s => s.groups.forEach(g => g.cases.forEach(c => {
+    total++;
+    const r = (data.results[c.id] || {}).result;
+    if (r === 'Pass') pass++; else if (r === 'Fail') fail++; else if (r === 'N/A') na++;
+  })));
+  document.getElementById('stTotal').textContent = total;
+  document.getElementById('stPass').textContent = pass;
+  document.getElementById('stFail').textContent = fail;
+  document.getElementById('stNA').textContent = na;
+  document.getElementById('stPend').textContent = total - pass - fail - na;
+}
+
+function saveProgress() {
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  const dd = new Date();
+  a.download = 'UAT-ผลทดสอบ-' + (INITIAL.project.name || '') + '-' + dd.getFullYear() + String(dd.getMonth()+1).padStart(2,'0') + String(dd.getDate()).padStart(2,'0') + '.json';
+  a.click();
+}
+
+function resumeFromFile(ev) {
+  const f = ev.target.files[0]; if (!f) return;
+  const r = new FileReader();
+  r.onload = (e) => {
+    try {
+      const d = JSON.parse(e.target.result);
+      if (!d.sections) throw new Error('รูปแบบไฟล์ไม่ถูกต้อง');
+      data = d; save(); render();
+      alert('📂 โหลดทำต่อสำเร็จ');
+    } catch(err) { alert('ไฟล์ไม่ถูกต้อง: ' + err.message); }
+  };
+  r.readAsText(f);
+  ev.target.value = '';
+}
+
+function resetAll() {
+  if (!confirm('ล้างข้อมูลที่กรอกทั้งหมด (ผลทดสอบ หมายเหตุ และข้อมูลผู้ทดสอบ)? การกระทำนี้ย้อนกลับไม่ได้')) return;
+  data.results = {};
+  data.meta = {};
+  save(); render();
+  alert('รีเซ็ตข้อมูลเรียบร้อย');
+}
+
+render();
+</script>
+</body>
+</html>
